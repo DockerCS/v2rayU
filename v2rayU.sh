@@ -20,13 +20,13 @@ CHINESE=0
 
 BASE_SOURCE_PATH="https://raw.githubusercontent.com/DockerCS/v2rayU/master"
 
-CLEAN_IPTABLES_SHELL="$BASE_SOURCE_PATH/v2rayU_util/global_setting/clean_iptables.sh"
+CLEAN_IPTABLES_SHELL="$BASE_SOURCE_PATH/v2rayU/global_setting/clean_iptables.sh"
 
 BASH_COMPLETION_SHELL="$BASE_SOURCE_PATH/v2ray.bash"
 
-UTIL_CFG="$BASE_SOURCE_PATH/v2rayU_util/util_core/util.cfg"
+UTIL_CFG="$BASE_SOURCE_PATH/v2rayU/util_core/util.cfg"
 
-UTIL_PATH="/usr/local/v2rayU/v2rayU_util/util.cfg"
+UTIL_PATH="/usr/local/v2rayU/v2rayU/util.cfg"
 
 #Centos 临时取消别名
 [[ -f /etc/redhat-release && -z $(echo $SHELL|grep zsh) ]] && unalias -a
@@ -96,7 +96,7 @@ removeV2Ray() {
     bash <(curl -L -s $CLEAN_IPTABLES_SHELL)
 
     #卸载v2rayU
-    pip uninstall v2rayU_util -y
+    pip uninstall v2rayU -y
     rm -rf /etc/bash_completion.d/v2ray.bash >/dev/null 2>&1
     rm -rf /usr/local/bin/v2ray >/dev/null 2>&1
     rm -rf /etc/v2ray_util >/dev/null 2>&1
@@ -212,14 +212,14 @@ updateProject() {
         rm -rf /usr/local/v2rayU
     fi
 
-    pip3 install -U v2rayU_util
+    pip3 install -U v2rayU
 
     [[ ! -z $DOMAIN ]] && sed -i "s/^domain.*/domain=${DOMAIN}/g" /usr/local/v2rayU/v2rayU.conf
 
     if [[ -e $UTIL_PATH ]];then
         [[ -z $(cat $UTIL_PATH|grep lang) ]] && echo "lang=en" >> $UTIL_PATH
     else
-        mkdir -p /etc/v2rayU_util
+        mkdir -p /etc/v2rayU
         curl $UTIL_CFG > $UTIL_PATH
         [[ ! -z $DOMAIN ]] && sed -i "s/^domain.*/domain=${DOMAIN}/g" $UTIL_PATH
     fi

@@ -152,7 +152,7 @@ def gen_cert(domain):
         os.system(start_cmd.format(name))
 
 def calcul_iptables_traffic(port):
-    traffic_result = os.popen("bash {0} {1}".format(pkg_resources.resource_filename("v2rayU_util", "global_setting/calcul_traffic.sh"), str(port))).readlines()
+    traffic_result = os.popen("bash {0} {1}".format(pkg_resources.resource_filename("v2rayU", "global_setting/calcul_traffic.sh"), str(port))).readlines()
     if traffic_result:
         traffic_list = traffic_result[0].split()
         upload_traffic = bytes_2_human_readable(int(traffic_list[0]), 2)

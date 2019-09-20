@@ -75,7 +75,7 @@ class Profile:
                 self.group_list.append(group)
         
         if len(self.group_list) == 0:
-            print("v2ray json no streamSettings item, please run {} to recreate v2ray json!".format(ColorStr.cyan("v2rayU_util new")))
+            print("v2ray json no streamSettings item, please run {} to recreate v2ray json!".format(ColorStr.cyan("v2rayU new")))
 
         del self.config
 

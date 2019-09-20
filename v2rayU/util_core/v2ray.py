@@ -25,9 +25,9 @@ class V2ray:
     @staticmethod
     def version():
         v2ray_version = bytes.decode(subprocess.check_output("/usr/bin/v2ray/v2ray -version | head -n 1 | awk '{print $2}'", shell=True))
-        import v2rayU_util
+        import v2rayU
         print("v2ray: {}".format(ColorStr.green(v2ray_version)))
-        print("v2rayU_util: {}".format(ColorStr.green(v2rayU_util.__version__)))
+        print("v2rayU: {}".format(ColorStr.green(v2rayU.__version__)))
 
     @staticmethod
     def info():
@@ -71,8 +71,8 @@ class V2ray:
 
     @classmethod
     def check(cls):
-        if not os.path.exists("/etc/v2rayU_util/util.cfg"):
-            subprocess.call("mkdir -p /etc/v2rayU_util && cp -f {} /etc/v2rayU_util/".format(pkg_resources.resource_filename(__name__, 'util.cfg')), shell=True)
+        if not os.path.exists("/etc/v2rayU/util.cfg"):
+            subprocess.call("mkdir -p /etc/v2rayU && cp -f {} /etc/v2rayU/".format(pkg_resources.resource_filename(__name__, 'util.cfg')), shell=True)
         if not os.path.exists("/usr/bin/v2ray/v2ray"):
             print(ColorStr.yellow(_("check v2ray no install, auto install v2ray..")))
             cls.update()
@@ -80,7 +80,7 @@ class V2ray:
 
     @classmethod
     def new(cls):
-        subprocess.call("rm -rf /etc/v2ray/config.json && cp {}/server.json /etc/v2ray/config.json".format(pkg_resources.resource_filename('v2rayU_util', "json_template")), shell=True)
+        subprocess.call("rm -rf /etc/v2ray/config.json && cp {}/server.json /etc/v2ray/config.json".format(pkg_resources.resource_filename('v2rayU', "json_template")), shell=True)
         new_uuid = uuid.uuid1()
         print("new UUID: {}".format(ColorStr.green(str(new_uuid))))
         random_port = random.randint(1000, 65535)
