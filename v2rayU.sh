@@ -203,10 +203,7 @@ planUpdate(){
 updateProject() {
     local DOMAIN=""
 
-    if ! type pip >/dev/null 2>&1;then
-        colorEcho $RED "pip no install!"
-        exit 1
-    fi
+    [[ ! $(type pip3 2>/dev/null) ]] && colorEcho $RED "pip3 no install!" && exit 1
 
     if [[ -e /usr/local/v2rayU/v2rayU.conf ]];then
         TEMP_VALUE=$(cat /usr/local/v2rayU/v2rayU.conf|grep domain|awk 'NR==1')
@@ -276,6 +273,10 @@ timeSync() {
 }
 
 profileInit() {
+    rm -f /usr/local/bin/v2ray >/dev/null 2>&1
+    #配置V2ray初始环境
+    cp -f /usr/local/v2rayU/v2ray /usr/local/bin
+    chmod +x /usr/local/bin/v2ray
 
     #清理v2ray模块环境变量
     [[ $(grep v2ray ~/$ENV_FILE) ]] && sed -i '/v2ray/d' ~/$ENV_FILE && source ~/$ENV_FILE
