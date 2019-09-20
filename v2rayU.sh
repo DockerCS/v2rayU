@@ -247,7 +247,8 @@ updateProject() {
     [[ $CHINESE == 1 ]] && sed -i "s/lang=en/lang=zh/g" $UTIL_PATH
 
     rm -f /usr/local/bin/v2ray >/dev/null 2>&1
-    ln -s $(which v2rayU-util) /usr/local/bin/v2ray
+    #ln -s $(which v2rayU-util) /usr/local/bin/v2ray
+    cp -f /usr/local/v2rayU/v2rayU_util /usr/local/bin/v2ray
 
     #更新v2ray bash_completion脚本
     curl $BASH_COMPLETION_SHELL > /etc/bash_completion.d/v2ray.bash
