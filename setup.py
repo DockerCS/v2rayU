@@ -24,7 +24,7 @@ setup(
     python_requires='>=3',
     entry_points={
         'console_scripts': [
-            'v2rayU-util = v2rayU.main:menu'
+            'v2rayU = v2rayU.main:menu'
         ]
     },
     classifiers=[
