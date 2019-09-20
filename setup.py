@@ -2,14 +2,14 @@
 # -*- coding: utf-8 -*-
 from setuptools import setup, find_packages
 
-# import v2ray_util
+import v2rayU_util
 
 with open("README.md", "r", encoding='UTF-8') as fh:
     long_description = fh.read()
 
 setup(
     name='v2rayU-util',
-    # version=v2ray_util.__version__,
+    version=v2rayU_util.__version__,
     description="a tool to manage v2ray config json",
     long_description=long_description,
     long_description_content_type="text/markdown",
