@@ -214,8 +214,6 @@ updateProject() {
 
     pip3 install -U v2rayU
 
-    [[ ! -z $DOMAIN ]] && sed -i "s/^domain.*/domain=${DOMAIN}/g" /usr/local/v2rayU/v2rayU.conf
-
     if [[ -e $UTIL_PATH ]];then
         [[ -z $(cat $UTIL_PATH|grep lang) ]] && echo "lang=en" >> $UTIL_PATH
     else
@@ -223,6 +221,8 @@ updateProject() {
         curl $UTIL_CFG > $UTIL_PATH
         [[ ! -z $DOMAIN ]] && sed -i "s/^domain.*/domain=${DOMAIN}/g" $UTIL_PATH
     fi
+
+    [[ $CHINESE == 1 ]] && sed -i "s/lang=en/lang=zh/g" $UTIL_PATH
 
     rm -f /usr/local/bin/v2ray >/dev/null 2>&1
     ln -s $(which v2rayU) /usr/local/bin/v2ray
