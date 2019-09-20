@@ -237,6 +237,8 @@ updateProject() {
         cd v2rayU && git checkout $UPDATE_VERSION
     fi
 
+    [[ ! -z $DOMAIN ]] && sed -i "s/^domain.*/domain=${DOMAIN}/g" /usr/local/v2rayU/v2rayU.conf
+
     if [[ -e $UTIL_PATH ]];then
         [[ -z $(cat $UTIL_PATH|grep lang) ]] && echo "lang=en" >> $UTIL_PATH
     else
