@@ -8,7 +8,7 @@ with open("README.md", "r", encoding='UTF-8') as fh:
     long_description = fh.read()
 
 setup(
-    name='v2rayU-util',
+    name='v2rayU',
     version=v2rayU.__version__,
     description="a tool to manage v2ray config json",
     long_description=long_description,
