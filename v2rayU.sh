@@ -96,9 +96,10 @@ removeV2Ray() {
     bash <(curl -L -s $CLEAN_IPTABLES_SHELL)
 
     #卸载v2rayU
-    rm -rf /usr/local/v2rayU >/dev/null 2>&1
+    pip uninstall v2rayU_util -y
     rm -rf /etc/bash_completion.d/v2ray.bash >/dev/null 2>&1
     rm -rf /usr/local/bin/v2ray >/dev/null 2>&1
+    rm -rf /etc/v2ray_util >/dev/null 2>&1
 
     #删除v2ray定时更新任务
     crontab -l|sed '/SHELL=/d;/v2ray/d' > crontab.txt
@@ -211,28 +212,7 @@ updateProject() {
         rm -rf /usr/local/v2rayU
     fi
 
-    cd /usr/local/
-    if [[ -e v2rayU && -e v2rayU/.git ]];then
-        cd v2rayU
-
-        COMMITTER_EMAIL=$(git log -1 --pretty=format:"%ae")
-        if [[ $COMMITTER_EMAIL =~ 'euvkzx' ]];then
-            git reset --hard HEAD && git clean -d -f
-            if [[ $FORCE == 1 ]]; then
-                git pull origin master
-            else
-                git fetch origin && git checkout $UPDATE_VERSION
-            fi
-        else
-            cd /usr/local/
-            rm -rf v2rayU
-            git clone https://github.com/DockerCS/v2rayU
-            cd v2rayU && git checkout $UPDATE_VERSION
-        fi
-    else
-        git clone https://github.com/DockerCS/v2rayU
-        cd v2rayU && git checkout $UPDATE_VERSION
-    fi
+    pip3 install -U v2rayU_util
 
     [[ ! -z $DOMAIN ]] && sed -i "s/^domain.*/domain=${DOMAIN}/g" /usr/local/v2rayU/v2rayU.conf
 
@@ -244,11 +224,8 @@ updateProject() {
         [[ ! -z $DOMAIN ]] && sed -i "s/^domain.*/domain=${DOMAIN}/g" $UTIL_PATH
     fi
 
-    [[ $CHINESE == 1 ]] && sed -i "s/lang=en/lang=zh/g" $UTIL_PATH
-
     rm -f /usr/local/bin/v2ray >/dev/null 2>&1
-    #ln -s $(which v2rayU-util) /usr/local/bin/v2ray
-    cp -f /usr/local/v2rayU/v2rayU_util /usr/local/bin/v2ray
+    ln -s $(which v2rayU-util) /usr/local/bin/v2ray
 
     #更新v2ray bash_completion脚本
     curl $BASH_COMPLETION_SHELL > /etc/bash_completion.d/v2ray.bash
