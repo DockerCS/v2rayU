@@ -8,7 +8,6 @@
     * [升级命令](#升级命令)
     * [卸载命令](#卸载命令)
     * [命令行参数](#命令行参数)
-    * [截图](#截图)
     * [系统要求](#系统要求)
     * [更新日志](#更新日志)
     * [特别说明](#特别说明)
@@ -105,15 +104,6 @@ source <(curl -sL https://raw.githubusercontent.com/DockerCS/v2rayU/master/v2ray
 ```
 更多命令行参数请参考 [v2rayU wiki](https://github.com/DocerCS/v2rayU/wiki)
 
-## 截图
-
-![1](images/1.png)
-
-![2](images/2.png)
-
-![3](images/3.png)
-
-![4](images/4.png)
 
 ## 系统要求
 
