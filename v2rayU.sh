@@ -203,7 +203,10 @@ planUpdate(){
 updateProject() {
     local DOMAIN=""
 
-    [[ ! $(type pip3 2>/dev/null) ]] && colorEcho $RED "pip3 no install!" && exit 1
+    if ! type pip >/dev/null 2>&1;then
+        colorEcho $RED "pip no install!"
+        exit 1
+    fi
 
     if [[ -e /usr/local/v2rayU/v2rayU.conf ]];then
         TEMP_VALUE=$(cat /usr/local/v2rayU/v2rayU.conf|grep domain|awk 'NR==1')
@@ -211,7 +214,7 @@ updateProject() {
         rm -rf /usr/local/v2rayU
     fi
 
-    cd /usr/loacl/
+    cd /usr/local/
     if [[ -e v2rayU && -e v2rayU/.git ]];then
         cd v2rayU
 
