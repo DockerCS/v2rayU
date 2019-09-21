@@ -99,7 +99,7 @@ removeV2Ray() {
     pip uninstall v2rayU -y
     rm -rf /etc/bash_completion.d/v2ray.bash >/dev/null 2>&1
     rm -rf /usr/local/bin/v2ray >/dev/null 2>&1
-    rm -rf /etc/v2ray_util >/dev/null 2>&1
+    rm -rf /etc/v2rayU >/dev/null 2>&1
 
     #删除v2ray定时更新任务
     crontab -l|sed '/SHELL=/d;/v2ray/d' > crontab.txt
