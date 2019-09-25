@@ -1,6 +1,6 @@
 #!/bin/bash
 # Author: DockerCS
-# Github: https://github.com/Jrohy/python3-install
+# Github: https://github.com/DockerCS/v2rayU/blob/master/py3_install.sh
 
 INSTALL_VERSION=""
 
