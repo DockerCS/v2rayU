@@ -43,7 +43,8 @@ def help():
     status               查看 V2Ray 运行状态
     new                  重建新的v2ray json配置文件
     update               更新 V2Ray 到最新Release版本
-    add                  新增mkcp + 随机一种 (srtp | wechat-video | utp | dtls) header伪装的端口(Group)
+    update.sh            更新 v2rayU 到最新版本
+    add                  新增mkcp + 随机一种 (srtp|wechat-video|utp|dtls|wireguard) header伪装的端口(Group)
     add [wechat|utp|srtp|dtls|wireguard|socks|mtproto|ss]     新增一种协议的组，端口随机,如 v2ray add utp 为新增utp协议
     del                  删除端口组
     info                 查看配置
@@ -51,6 +52,7 @@ def help():
     tls                  修改tls
     tfo                  修改tcpFastOpen
     stream               修改传输协议
+    cdn                  走cdn
     stats                iptables流量统计
     clean                清理日志
     log                  查看日志
@@ -66,7 +68,8 @@ def help():
     status               check V2Ray status
     new                  create new json profile
     update               update v2ray to latest
-    add                  random create mkcp + (srtp | wechat-video | utp | dtls) fake header group
+    update.sh            update v2rayU to latest
+    add                  random create mkcp + (srtp|wechat-video|utp|dtls|wireguard) fake header group
     add [wechat|utp|srtp|dtls|wireguard|socks|mtproto|ss]     create special protocol, random new port
     del                  delete port group
     info                 check v2ray profile
@@ -74,10 +77,15 @@ def help():
     tls                  modify tls
     tfo                  modify tcpFastOpen
     stream               modify protocol
+    cdn                  cdn mode
     stats                iptables traffic statistics
     clean                clean v2ray log
     log                  check v2ray log
         """.format(exec_name[exec_name.rfind("/") + 1:]))
+
+def updateSh():
+    subprocess.Popen("curl -Ls https://git.io/v2rayU -o temp.sh", shell=True).wait()
+    subprocess.Popen("bash temp.sh -k && rm -f temp.sh", shell=True).wait()
 
 def parse_arg():
     if len(sys.argv) == 1:
@@ -89,9 +97,9 @@ def parse_arg():
             V2ray.stop()
         elif sys.argv[1] == "restart":
             V2ray.restart()
-        elif sys.argv[1] == "-h" or sys.argv[1] == "--help":
+        elif sys.argv[1] in ("-h", "--help"):
             help()
-        elif sys.argv[1] == "-v" or sys.argv[1] == "--version":
+        elif sys.argv[1] in ("-v", "--version"):
             V2ray.version()
         elif sys.argv[1] == "status":
             V2ray.status()
@@ -99,40 +107,35 @@ def parse_arg():
             V2ray.info()
         elif sys.argv[1] == "port":
             base.port()
-            open_port()
-            V2ray.restart()
         elif sys.argv[1] == "tls":
             tls.modify()
-            V2ray.restart()
         elif sys.argv[1] == "tfo":
             base.tfo()
-            V2ray.restart()
         elif sys.argv[1] == "stream":
             stream.modify()
-            V2ray.restart()
         elif sys.argv[1] == "stats":
             iptables_ctr.manage()
         elif sys.argv[1] == "clean":
             V2ray.cleanLog()
         elif sys.argv[1] == "del":
             multiple.del_port()
-            V2ray.restart()
         elif sys.argv[1] == "add":
             multiple.new_port()
-            open_port()
-            V2ray.restart()
         elif sys.argv[1] == "update":
             V2ray.update()
+        elif sys.argv[1] == "update.sh":
+            updateSh()
         elif sys.argv[1] == "new":
             V2ray.new()
         elif sys.argv[1] == "convert":
             V2ray.convert()
         elif sys.argv[1] == "log":
             V2ray.log()
+        elif sys.argv[1] == "cdn":
+            cdn.modify()
     else:
         if sys.argv[1] == "add":
             multiple.new_port(sys.argv[2])
-            V2ray.restart()
     sys.exit(0)
 
 def service_manage():
@@ -169,11 +172,10 @@ def user_manage():
         multiple.del_user()
     elif choice == 4:
         multiple.del_port()
-    V2ray.restart()
 
 def profile_alter():
     show_text = (_("modify email"), _("modify UUID"), _("modify alterID"), _("modify port"), _("modify stream"), _("modify tls"), 
-                _("modify tcpFastOpen"), _("modify dyn_port"), _("modify shadowsocks method"), _("modify shadowsocks password"), _("open CDN"))
+                _("modify tcpFastOpen"), _("modify dyn_port"), _("modify shadowsocks method"), _("modify shadowsocks password"), _("CDN mode(need domain)"))
     print("")
     for index, text in enumerate(show_text): 
         print("{}.{}".format(index + 1, text))
@@ -188,7 +190,6 @@ def profile_alter():
         base.alterid()
     elif choice == 4:
         base.port()
-        open_port()
     elif choice == 5:
         stream.modify()
     elif choice == 6:
@@ -203,7 +204,6 @@ def profile_alter():
         ss.modify('password')
     elif choice == 11:
         cdn.modify()
-    V2ray.restart()
 
 def global_setting():
     show_text = (_("V2ray Traffic Statistics"), _("Iptables Traffic Statistics"), _("Ban Bittorrent"), _("Schedule Update V2ray"), _("Clean Log"), _("Change Language"))
@@ -217,7 +217,6 @@ def global_setting():
         iptables_ctr.manage()
     elif choice == 3:
         ban_bt.manage()
-        V2ray.restart()
     elif choice == 4:
         update_timer.manage()
     elif choice == 5:

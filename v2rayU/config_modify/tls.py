@@ -3,6 +3,7 @@
 import socket
 import os
 
+from ..util_core.v2ray import restart
 from ..util_core.writer import GroupWriter
 from ..util_core.group import Mtproto, SS
 from ..util_core.selector import GroupSelector
@@ -18,11 +19,12 @@ class TLSModifier:
         print(_("2. Customize certificate(prepare certificate file paths)"))
         print("")
         choice=input(_("please select: "))
+        input_domain = self.domain
         if choice == "1":
-            local_ip = get_ip()
-            print(_("local vps ip address: ") + local_ip + "\n")
-            if not self.domain:
-                input_domain=input(_("please input your vps domain: "))
+            if not input_domain:
+                local_ip = get_ip()
+                print(_("local vps ip address: ") + local_ip + "\n")
+                input_domain = input(_("please input your vps domain: "))
                 try:
                     input_ip = socket.gethostbyname(input_domain)
                 except Exception:
@@ -48,29 +50,30 @@ class TLSModifier:
             if not os.path.exists(crt_file) or not os.path.exists(key_file):
                 print(_("certificate cert or key not exist!"))
                 return
-            if not self.domain:
-                domain = input(_("please input the certificate cert file domain: "))
-                if not domain:
+            if not input_domain:
+                input_domain = input(_("please input the certificate cert file domain: "))
+                if not input_domain:
                     print(_("domain is null!"))
                     return
-            self.writer.write_tls(True, crt_file=crt_file, key_file=key_file, domain=domain)
+            self.writer.write_tls(True, crt_file=crt_file, key_file=key_file, domain=input_domain)
         else:
             print(_("input error!"))
     
     def turn_off(self):
         self.writer.write_tls(False)
 
+@restart()
 def modify():
     gs = GroupSelector(_('modify tls'))
     group = gs.group
 
     if group == None:
-        exit(-1)
+        pass
     else:
         if type(group.node_list[0]) == Mtproto or type(group.node_list[0]) == SS:
             print(_("V2ray MTProto/Shadowsocks protocol not support https!!!"))
             print("")
-            exit(-1)
+            return
         tm = TLSModifier(group.tag, group.index)
         tls_status = 'open' if group.tls == 'tls' else 'close'
         print("{}: {}\n".format(_("group tls status"), tls_status))
@@ -78,9 +81,15 @@ def modify():
         print(_("1.open TLS"))
         print(_("2.close TLS"))
         choice = input(_("please select: "))
+        if not choice:
+            return
+        if not choice in ("1", "2"):
+            print(_("input error, please input again"))
+            return
+
         if choice == '1':
             tm.turn_on()
         elif choice == '2':
             tm.turn_off()
-        else:
-            print(_("input error, please input again"))
+            
+        return True
