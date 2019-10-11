@@ -84,7 +84,7 @@ def help():
         """.format(exec_name[exec_name.rfind("/") + 1:]))
 
 def updateSh():
-    subprocess.Popen("curl -Ls https://git.io/v2rayU -o temp.sh", shell=True).wait()
+    subprocess.Popen("curl -Ls https://raw.githubusercontent.com/DockerCS/v2rayU/master/v2rayU.sh -o temp.sh", shell=True).wait()
     subprocess.Popen("bash temp.sh -k && rm -f temp.sh", shell=True).wait()
 
 def parse_arg():
