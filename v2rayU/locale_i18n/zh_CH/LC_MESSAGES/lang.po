@@ -185,8 +185,8 @@ msgstr "请输入数字来"
 msgid "last group can't delete!!!"
 msgstr "仅剩最后一个端口无法删除!!!"
 
-msgid "please input group alphabet to"
-msgstr "请输入节点Group字母来"
+msgid "please input group to"
+msgstr "请输入节点Group来"
 
 msgid "input error, please check group"
 msgstr "输入有误，请检查组"
@@ -590,9 +590,6 @@ msgstr "2.443端口 + ws"
 
 msgid "3.close cdn(80 port)"
 msgstr "3.关闭cdn(80端口)"
-
-msgid "please input ws fake domain(enter to no need): "
-msgstr "请输入ws要伪装的域名(不伪装直接回车): "
 
 msgid "please input run cdn mode domain: "
 msgstr "请输入走cdn的域名: "

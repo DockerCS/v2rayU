@@ -45,7 +45,7 @@ class Profile:
             with open(self.path, 'r') as json_file:
                 self.config = json.load(json_file)
 
-        #读取配置文件大框架
+        # 读取配置文件大框架
         conf_inbounds = self.config["inbounds"]
         conf_rules = self.config["routing"]["rules"]
 
@@ -62,7 +62,7 @@ class Profile:
             if "protocol" in rule and "bittorrent" in rule["protocol"]:
                 self.ban_bt = True
 
-        #获取本机IP地址
+        # 获取本机IP地址
         my_ip = urllib.request.urlopen('http://api.ipify.org').read()
         local_ip = bytes.decode(my_ip)
 
@@ -71,9 +71,12 @@ class Profile:
             group = self.parse_group(json_part, index, local_ip)
             if group != None:
                 group_ascii = group_ascii + 1
-                group.tag = chr(group_ascii)
+                if group_ascii > 90:
+                    group.tag = str(group_ascii)
+                else:
+                    group.tag = chr(group_ascii)
                 self.group_list.append(group)
-        
+
         if len(self.group_list) == 0:
             print("v2ray json no streamSettings item, please run {} to recreate v2ray json!".format(ColorStr.cyan("v2rayU new")))
 
@@ -81,7 +84,7 @@ class Profile:
 
     def parse_group(self, part_json, group_index, local_ip):
         dyp, quic, end_port, tfo, header, tls, path, host, conf_ip = Dyport(), None, None, None, "", "", "", "", local_ip
-        
+
         protocol = part_json["protocol"]
 
         if protocol == 'dokodemo-door' or (protocol == "vmess" and "streamSettings" not in part_json):
@@ -125,12 +128,12 @@ class Profile:
 
             if conf_stream["network"] == "kcp" and "header" in conf_stream["kcpSettings"]:
                 header = conf_stream["kcpSettings"]["header"]["type"]
-            
+
             if conf_stream["network"] == "quic" and conf_stream["quicSettings"]:
                 quic_settings = conf_stream["quicSettings"]
                 quic = Quic(quic_settings["security"], quic_settings["key"], quic_settings["header"]["type"])
-        
-        group = Group(conf_ip, port,  end_port=end_port, tls=tls, tfo=tfo, dyp=dyp, index=group_index)
+
+        group = Group(conf_ip, port, end_port=end_port, tls=tls, tfo=tfo, dyp=dyp, index=group_index)
 
         if protocol == "shadowsocks":
             self.user_number = self.user_number + 1
@@ -140,11 +143,11 @@ class Profile:
             group.protocol = ss.__class__.__name__
             return group
         elif protocol == "vmess":
-            clients=conf_settings["clients"]
+            clients = conf_settings["clients"]
         elif protocol == "socks":
-            clients=conf_settings["accounts"]
+            clients = conf_settings["accounts"]
         elif protocol == "mtproto":
-            clients=conf_settings["users"]
+            clients = conf_settings["users"]
 
         for client in clients:
             email, node = "", None
@@ -160,7 +163,7 @@ class Profile:
 
             elif protocol == "mtproto":
                 node = Mtproto(self.user_number, client["secret"], user_info=email)
-                
+
             if not group.protocol:
                 group.protocol = node.__class__.__name__
 

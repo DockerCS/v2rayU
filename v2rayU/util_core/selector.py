@@ -11,7 +11,7 @@ class CommonSelector:
         else:
             raise ValueError("{} object can't iterate".format(collection))
         self.msg = msg
-    
+
     def select(self):
         for index, element in enumerate(self.collection):
             print("{0}.{1}".format(index + 1, element))
@@ -40,7 +40,7 @@ class ClientSelector(Selector):
         if _("del") in action and self.list_size == 1:
             print(ColorStr.red(_("last node can't delete!!!")))
             self.group = None
-        elif self.list_size > 1: 
+        elif self.list_size > 1:
             self.select_client()
         else:
             self.group = self.group_list[0]
@@ -83,8 +83,8 @@ class GroupSelector(Selector):
 
     def select_group(self):
         print(self.profile)
-        choice = input("{} {}: ".format(_("please input group alphabet to"), self.action))
-        group_list = [x for x in self.group_list if x.tag == choice]
+        choice = input("{} {}: ".format(_("please input group to"), self.action))
+        group_list = [x for x in self.group_list if x.tag == str.upper(choice)]
         if len(group_list) == 0:
             print(ColorStr.red('{0} {1} {2}'.format(_("input error, please check group"), choice, _("exist"))))
             self.group = None
