@@ -106,7 +106,7 @@ removeV2Ray() {
     crontab crontab.txt >/dev/null 2>&1
     rm -f crontab.txt >/dev/null 2>&1
 
-    if [[ ${OS} == 'CentOS' || ${OS} == 'Fedora' ]];then
+    if [[ ${OS} =~ 'CentOS' || ${OS} == 'Fedora' ]];then
         systemctl restart crond >/dev/null 2>&1
     else
         systemctl restart cron >/dev/null 2>&1
@@ -136,6 +136,9 @@ checkSys() {
         if [[ $(cat /etc/redhat-release | grep Fedora) ]];then
             OS='Fedora'
             PACKAGE_MANAGER='dnf'
+        elif [[ $(cat /etc/redhat-release |grep "CentOS Linux release 8") ]];then
+            OS='CentOS8'
+            PACKAGE_MANAGER='dnf'
         else
             OS='CentOS'
             PACKAGE_MANAGER='yum'
@@ -157,14 +160,17 @@ checkSys() {
 
 #安装依赖
 installDependent(){
-    if [[ ${OS} == 'CentOS' || ${OS} == 'Fedora' ]];then
-        ${PACKAGE_MANAGER} install ntpdate socat crontabs lsof which -y
+    if [[ ${OS} =~ 'CentOS' || ${OS} == 'Fedora' ]];then
+        if [[ ${OS} != 'CentOS8' ]];then
+            ${PACKAGE_MANAGER} ntpdate -y
+        fi
+        ${PACKAGE_MANAGER} install socat crontabs lsof which -y
     else
         ${PACKAGE_MANAGER} update
         ${PACKAGE_MANAGER} install ntpdate socat cron lsof -y
     fi
 
-    #install python3 & pip3
+    #install python3 & pip
     bash <(curl -sL https://raw.githubusercontent.com/DockerCS/v2rayU/master/py3_install.sh)
 }
 
@@ -192,7 +198,7 @@ planUpdate(){
 	echo "0 ${LOCAL_TIME} * * * bash <(curl -L -s https://install.direct/go.sh) | tee -a /root/v2rayUpdate.log && systemctl restart v2ray" >> crontab.txt
 	crontab crontab.txt
 	sleep 1
-	if [[ ${OS} == 'CentOS' || ${OS} == 'Fedora' ]];then
+	if [[ ${OS} =~ 'CentOS' || ${OS} == 'Fedora' ]];then
         systemctl restart crond
 	else
         systemctl restart cron
@@ -204,7 +210,7 @@ planUpdate(){
 updateProject() {
     local DOMAIN=""
 
-    [[ ! $(type pip3 2>/dev/null) ]] && colorEcho $RED "pip3 no install!" && exit 1
+    [[ ! $(type pip 2>/dev/null) ]] && colorEcho $RED "pip no install!" && exit 1
 
     if [[ -e /usr/local/v2rayU/v2rayU.conf ]];then
         TEMP_VALUE=$(cat /usr/local/v2rayU/v2rayU.conf|grep domain|awk 'NR==1')
@@ -212,7 +218,7 @@ updateProject() {
         rm -rf /usr/local/v2rayU
     fi
 
-    pip3 install -U v2rayU
+    pip install -U v2rayU
 
     if [[ -e $UTIL_PATH ]];then
         [[ -z $(cat $UTIL_PATH|grep lang) ]] && echo "lang=en" >> $UTIL_PATH
@@ -230,17 +236,17 @@ updateProject() {
     #更新v2ray bash_completion脚本
     curl $BASH_COMPLETION_SHELL > /etc/bash_completion.d/v2ray.bash
     [[ -z $(echo $SHELL|grep zsh) ]] && source /etc/bash_completion.d/v2ray.bash
-    
+
     #安装/更新V2ray主程序
     bash <(curl -L -s https://install.direct/go.sh)
 }
 
 #时间同步
 timeSync() {
-    if [[ ${INSTALL_WAY} == 0 ]];then
+    if [[ ${INSTALL_WAY} == 0 && ${OS} != 'CentOS8' ]];then
         echo -e "${Info} Time Synchronizing.. ${Font}"
         ntpdate pool.ntp.org
-        if [[ $? -eq 0 ]];then 
+        if [[ $? -eq 0 ]];then
             echo -e "${OK} Time Sync Success ${Font}"
             echo -e "${OK} now: `date -R`${Font}"
             sleep 1
@@ -262,7 +268,7 @@ profileInit() {
     [[ -z $(echo $SHELL|grep zsh) && -z $(grep v2ray.bash ~/$ENV_FILE) ]] && echo "source /etc/bash_completion.d/v2ray.bash" >> ~/$ENV_FILE && source ~/$ENV_FILE
 
     #全新安装的新配置
-    if [[ ${INSTALL_WAY} == 0 ]];then 
+    if [[ ${INSTALL_WAY} == 0 ]];then
         v2ray new
     else
         v2ray convert
