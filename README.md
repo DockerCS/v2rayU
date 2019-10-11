@@ -64,17 +64,17 @@ V2ray多用户管理脚本，向导式管理[新增|删除|修改]传输协议�
 ## 安装命令
 
 ```bash
-source <(curl -sL https://git.io/v2rayU) --zh
+source <(curl -sL https://raw.githubusercontent.com/DockerCS/v2rayU/master/v2rayU.sh) --zh
 ```
 
 ## 升级命令(保留配置文件，升级失败请全新安装)
 ```bash
-source <(curl -sL https://git.io/v2rayU) -k
+source <(curl -sL https://raw.githubusercontent.com/DockerCS/v2rayU/master/v2rayU.sh) -k
 ```
 
 ## 卸载命令
 ```bash
-source <(curl -sL https://git.io/v2rayU) --remove
+source <(curl -sL https://raw.githubusercontent.com/DockerCS/v2rayU/master/v2rayU.sh) --remove
 ```
 
 ## 命令行参数  
