@@ -100,8 +100,15 @@ def is_email(email):
     """
     判断是否是邮箱格式
     """
-    str=r'^[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+){0,4}@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+){0,4}$'
+    str = r'^[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+){0,4}@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+){0,4}$'
     return re.match(str, email)
+
+def is_ip(ip):
+    """
+    判断是否是ip
+    """
+    str = r'^((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$'
+    return re.match(str, ip)
 
 def bytes_2_human_readable(number_of_bytes, precision=1):
     """
@@ -143,7 +150,7 @@ def gen_cert(domain):
     if not os.path.exists("/root/.acme.sh/acme.sh"):
         os.system("curl https://get.acme.sh | sh")
 
-    get_ssl_cmd = "bash /root/.acme.sh/acme.sh  --issue -d " + domain + "   --standalone  --keylength ec-256"
+    get_ssl_cmd = "bash /root/.acme.sh/acme.sh --issue -d " + domain + " --debug --standalone --keylength ec-256"
 
     for name in service_name:
         os.system(stop_cmd.format(name))
@@ -174,6 +181,8 @@ def clean_iptables(port):
         os.system(clean_cmd.format("OUTPUT", str(line)))
 
 def open_port():
+    if os.path.exists("/.dockerenv"):
+        return
     input_cmd = "iptables -I INPUT -p {0} --dport {1} -j ACCEPT"
     output_cmd = "iptables -I OUTPUT -p {0} --sport {1}"
     check_cmd = "iptables -nvL --line-number|grep -w \"%s\""
@@ -192,3 +201,22 @@ def open_port():
         os.system(input_cmd.format("udp", port_str))
         os.system(output_cmd.format("tcp", port_str))
         os.system(output_cmd.format("udp", port_str))
+
+def loop_input_choice_number(input_tip, length):
+    """
+    循环输入选择的序号,直到符合规定为止
+    """
+    while True:
+        print("")
+        choice = input(input_tip)
+        if not choice:
+            return
+        if choice.isnumeric():
+            choice = int(choice)
+        else:
+            print(ColorStr.red(_("input error, please input again")))
+            continue
+        if (choice <= length and choice > 0):
+            return choice
+        else:
+            print(ColorStr.red(_("input error, please input again")))
