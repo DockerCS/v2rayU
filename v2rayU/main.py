@@ -1,32 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import os
 import sys
 import subprocess
 import pkg_resources
 
 from .util_core.v2ray import V2ray
-from .util_core.utils import ColorStr, open_port
+from .util_core.utils import ColorStr, open_port, loop_input_choice_number
 from .global_setting import stats_ctr, iptables_ctr, ban_bt, update_timer
 from .config_modify import base, multiple, ss, stream, tls, cdn
-
-def loop_input_choice_number(input_tip, number_max):
-    """
-    循环输入选择的序号,直到符合规定为止
-    """
-    while True:
-        print("")
-        choice = input(input_tip)
-        if not choice:
-            break
-        if choice.isnumeric():
-            choice = int(choice)
-        else:
-            print(ColorStr.red(_("input error, please input again")))
-            continue
-        if (choice <= number_max and choice > 0):
-            return choice
-        else:
-            print(ColorStr.red(_("input error, please input again")))
 
 def help():
     exec_name = sys.argv[0]
@@ -53,7 +35,8 @@ def help():
     tfo                  修改tcpFastOpen
     stream               修改传输协议
     cdn                  走cdn
-    stats                iptables流量统计
+    stats                v2ray流量统计
+    iptables             iptables流量统计
     clean                清理日志
     log                  查看日志
         """.format(exec_name[exec_name.rfind("/") + 1:]))
@@ -78,14 +61,18 @@ def help():
     tfo                  modify tcpFastOpen
     stream               modify protocol
     cdn                  cdn mode
-    stats                iptables traffic statistics
+    stats                v2ray traffic statistics
+    iptables             iptables traffic statistics
     clean                clean v2ray log
     log                  check v2ray log
         """.format(exec_name[exec_name.rfind("/") + 1:]))
 
 def updateSh():
-    subprocess.Popen("curl -Ls https://raw.githubusercontent.com/DockerCS/v2rayU/master/v2rayU.sh -o temp.sh", shell=True).wait()
-    subprocess.Popen("bash temp.sh -k && rm -f temp.sh", shell=True).wait()
+    if os.path.exists("/.dockerenv"):
+        print(ColorStr.yellow("docker run not support update!"))
+    else:
+        subprocess.Popen("curl -Ls https://raw.githubusercontent.com/DockerCS/v2rayU/master/v2rayU.sh -o temp.sh", shell=True).wait()
+        subprocess.Popen("bash temp.sh -k && rm -f temp.sh", shell=True).wait()
 
 def parse_arg():
     if len(sys.argv) == 1:
@@ -114,6 +101,8 @@ def parse_arg():
         elif sys.argv[1] == "stream":
             stream.modify()
         elif sys.argv[1] == "stats":
+            stats_ctr.manage()
+        elif sys.argv[1] == "iptables":
             iptables_ctr.manage()
         elif sys.argv[1] == "clean":
             V2ray.cleanLog()
