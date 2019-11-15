@@ -274,14 +274,17 @@ msgstr "1.开启流量统计"
 msgid "2.close statistics"
 msgstr "2.关闭流量统计"
 
-msgid "3.check statistics result"
-msgstr "3.查看流量统计"
+msgid "3.check user statistics result"
+msgstr "3.查看用户流量统计"
 
-msgid "4.reset statistics"
-msgstr "4.重置流量统计"
+msgid "4.check group statistics result"
+msgstr "4.查看组流量统计"
 
-msgid "tip: only have email node can statistics, restart v2ray will reset traffic statistics!!!"
-msgstr "tip: 具有有效email节点才会统计, 重启v2ray会重置流量统计!!!"
+msgid "5.reset statistics"
+msgstr "5.重置流量统计"
+
+msgid "tip: restart v2ray will reset traffic statistics!!!"
+msgstr "tip: 重启v2ray会重置流量统计!!!"
 
 msgid "open traffic statistics will close schedule update v2ray, continue?(y/n): "
 msgstr "开启流量统计会关闭定时更新v2ray服务, 是否继续y/n: "
@@ -295,11 +298,11 @@ msgstr "开启流量统计成功!"
 msgid "close traffic statistics success!"
 msgstr "关闭流量统计成功!"
 
-msgid "only open traffic statistics can"
-msgstr "流量统计开启状态才能"
+msgid "only open traffic statistics to operate"
+msgstr "流量统计开启状态才能操作"
 
-msgid "please input number or group alphabet to"
-msgstr "请输入流量的组别(字母)或者序号(数字)来"
+msgid "please input number or group alphabet to reset: "
+msgstr "请输入流量的组别(字母)或者序号(数字)来重置: "
 
 msgid "no effective email!!!"
 msgstr "无有效邮箱，无法统计!!!"
@@ -441,8 +444,8 @@ msgstr "回车直接以该端口新建Group, 否则输入自定义端口"
 msgid "new port"
 msgstr "新端口为"
 
-msgid "user number"
-msgstr "user数量"
+msgid "add user"
+msgstr "新增用户"
 
 msgid "input email to create user, or enter to pass: "
 msgstr "是否输入email来新建用户, 回车直接跳过: "
@@ -582,14 +585,14 @@ msgstr "V2ray MTProto/Shadowsocks协议不支持配置https!!!"
 msgid "modify cdn"
 msgstr "修改cdn"
 
-msgid "1.80 port + ws"
-msgstr "1.80端口 + ws"
+msgid "1.open http cdn"
+msgstr "1.开启 http cdn"
 
-msgid "2.443 port + ws"
-msgstr "2.443端口 + ws"
+msgid "2.open https cdn"
+msgstr "2.开启 https cdn"
 
-msgid "3.close cdn(80 port)"
-msgstr "3.关闭cdn(80端口)"
+msgid "3.close http cdn"
+msgstr "3.关闭http cdn"
 
 msgid "please input run cdn mode domain: "
 msgstr "请输入走cdn的域名: "
@@ -600,8 +603,14 @@ msgstr "域名为空!"
 msgid "must be close cdn proxy!"
 msgstr "必须先关闭cdn的代理!"
 
-msgid "only support 80 port cdn close!"
-msgstr "仅支持80端口cdn关闭!"
+msgid "only support http port cdn close!"
+msgstr "仅支持http的cdn关闭!"
+
+msgid "please select http port to cdn: "
+msgstr "请选择走http cdn端口的序号: "
+
+msgid "please select https port to cdn: "
+msgstr "请选择走https cdn端口的序号: "
 
 ### update_timer.py start ###
 
