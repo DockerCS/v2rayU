@@ -37,7 +37,7 @@ def clean_mtproto_tag(config, group_index):
             break
 
 class Writer:
-    def __init__(self, group_tag='A', group_index=0):
+    def __init__(self, group_tag = 'A', group_index=0):
         self.multi_config = Config()
         self.group_index = group_index
         self.group_tag = group_tag
@@ -66,7 +66,7 @@ class Writer:
         '''
         save v2ray config.json
         '''
-        json_dump = json.dumps(self.config, indent=2)
+        json_dump=json.dumps(self.config, indent=2)
         with open(self.path, 'w') as writer:
             writer.writelines(json_dump)
 
@@ -74,7 +74,7 @@ class StreamWriter(Writer):
     def __init__(self, group_tag, group_index, stream_type=None):
         super(StreamWriter, self).__init__(group_tag, group_index)
         self.stream_type = stream_type
-
+    
     def to_mtproto(self, template_json):
         mtproto_in = template_json["mtproto-in"]
         mtproto_in["port"] = self.part_json["port"]
@@ -94,7 +94,7 @@ class StreamWriter(Writer):
         if not has_outbound:
             mtproto_out = template_json["mtproto-out"]
             self.config["outbounds"].append(mtproto_out)
-
+        
         rules = self.config["routing"]["rules"]
         has_bind = False
         for rule in rules:
@@ -123,11 +123,11 @@ class StreamWriter(Writer):
             security_backup = self.part_json["streamSettings"]["security"]
             tls_settings_backup = self.part_json["streamSettings"]["tlsSettings"]
 
-        # mtproto换成其他协议时, 减少mtproto int和out的路由绑定
+        #mtproto换成其他协议时, 减少mtproto int和out的路由绑定
         if origin_protocol == StreamType.MTPROTO and origin_protocol != self.stream_type:
             clean_mtproto_tag(self.config, self.group_index)
 
-        # 原来是socks/mtproto/shadowsocks协议 则先切换为标准的inbound
+        #原来是socks/mtproto/shadowsocks协议 则先切换为标准的inbound
         if origin_protocol == StreamType.MTPROTO or origin_protocol == StreamType.SOCKS or origin_protocol == StreamType.SS:
             vmess = self.load_template('server.json')
             vmess["inbounds"][0]["port"] = self.part_json["port"]
@@ -137,7 +137,7 @@ class StreamWriter(Writer):
 
         if self.stream_type == StreamType.KCP:
             self.part_json["streamSettings"] = self.load_template('kcp.json')
-
+        
         elif self.stream_type == StreamType.KCP_UTP:
             self.part_json["streamSettings"] = self.load_template('kcp.json')
             self.part_json["streamSettings"]["kcpSettings"]["header"]["type"] = "utp"
@@ -194,7 +194,7 @@ class StreamWriter(Writer):
             ss["settings"]["method"] = kw["method"]
             ss["settings"]["password"] = kw["password"]
             self.part_json = ss
-
+        
         elif self.stream_type == StreamType.WS:
             ws = self.load_template('ws.json')
             salt = '/' + ''.join(random.sample(string.ascii_letters + string.digits, 8)) + '/'
@@ -217,8 +217,8 @@ class StreamWriter(Writer):
                 tm.turn_on()
                 return
 
-        if (self.stream_type != StreamType.MTPROTO and origin_protocol != StreamType.MTPROTO
-                and self.stream_type != StreamType.SS and origin_protocol != StreamType.SS):
+        if (self.stream_type != StreamType.MTPROTO and origin_protocol != StreamType.MTPROTO 
+           and self.stream_type != StreamType.SS and origin_protocol != StreamType.SS):
             self.part_json["streamSettings"]["security"] = security_backup
             self.part_json["streamSettings"]["tlsSettings"] = tls_settings_backup
 
@@ -255,11 +255,11 @@ class GroupWriter(Writer):
             self.part_json["settings"]["email"] = email
         self.save()
 
-    def write_dyp(self, status=False, aid='32'):
+    def write_dyp(self, status = False, aid = '32'):
         if status:
             short_uuid = str(uuid.uuid1())[0:7]
             dynamic_port_tag = "dynamicPort" + short_uuid
-            self.part_json["settings"].update({"detour": {"to": dynamic_port_tag}})
+            self.part_json["settings"].update({"detour":{"to":dynamic_port_tag}})
             dyn_json = self.load_template('dyn_port.json')
             dyn_json["settings"]["default"]["alterId"] = int(aid)
             dyn_json["tag"] = dynamic_port_tag
@@ -274,12 +274,12 @@ class GroupWriter(Writer):
                 del self.part_json["settings"]["detour"]
         self.save()
 
-    def write_tls(self, status=False, *, crt_file=None, key_file=None, domain=None):
+    def write_tls(self, status = False, *, crt_file=None, key_file=None, domain=None):
         if status:
             tls_settings = {"certificates": [
                 {
-                    "certificateFile": crt_file,
-                    "keyFile": key_file
+                "certificateFile": crt_file,
+                "keyFile": key_file
                 }
             ]}
             self.part_json["streamSettings"]["security"] = "tls"
@@ -297,7 +297,7 @@ class GroupWriter(Writer):
                 self.part_json["streamSettings"]["tlsSettings"] = {}
             self.save()
 
-    def write_tfo(self, action='del'):
+    def write_tfo(self, action = 'del'):
         if action == "del":
             if "sockopt" in self.part_json["streamSettings"]:
                 del self.part_json["streamSettings"]["sockopt"]
@@ -312,12 +312,12 @@ class GroupWriter(Writer):
         self.save()
 
 class ClientWriter(Writer):
-    def __init__(self, group_tag='A', group_index=0, client_index=0):
+    def __init__(self, group_tag = 'A', group_index = 0, client_index = 0):
         super(ClientWriter, self).__init__(group_tag, group_index)
         self.client_index = client_index
         self.client_str = "clients" if self.part_json["protocol"] == "vmess" else "users"
 
-    def write_aid(self, aid=32):
+    def write_aid(self, aid = 32):
         self.part_json["settings"][self.client_str][self.client_index]["alterId"] = int(aid)
         self.save()
 
@@ -338,7 +338,7 @@ class GlobalWriter(Writer):
         super(GlobalWriter, self).__init__()
         self.group_list = group_list
 
-    def write_ban_bittorrent(self, status=False):
+    def write_ban_bittorrent(self, status = False):
         '''
         禁止BT设置
         '''
@@ -378,7 +378,7 @@ class GlobalWriter(Writer):
 
         self.save()
 
-    def write_stats(self, status=False):
+    def write_stats(self, status = False):
         '''
         更改流量统计设置
         '''
@@ -398,7 +398,7 @@ class GlobalWriter(Writer):
 
             dokodemo_door = stats_json["dokodemoDoor"]
             del stats_json["dokodemoDoor"]
-            # 产生随机dokodemo_door的连接端口
+            #产生随机dokodemo_door的连接端口
             while True:
                 random_port = random.randint(1000, 65535)
                 if not port_is_use(random_port):
@@ -408,12 +408,12 @@ class GlobalWriter(Writer):
             has_door = False
             for inbound in self.config["inbounds"]:
                 if inbound["protocol"] == "dokodemo-door" and inbound["tag"] == "api":
-                    has_door = True
+                    has_door = True 
                     break
             if not has_door:
                 self.config["inbounds"].append(dokodemo_door)
 
-            # 加入流量统计三件套
+            #加入流量统计三件套
             self.config.update(stats_json)
 
             # 为各个组节点打上tag, 以便流量统计
@@ -465,8 +465,8 @@ class NodeWriter(Writer):
             user = {"user": kw["user"], "pass": kw["pass"]}
             self.part_json["settings"]["accounts"].append(user)
             print("{0} user: {1}, pass: {2}".format(_("add socks5 user success!"), kw["user"], kw["pass"]))
-
-        elif self.part_json['protocol'] == 'vmess':
+        
+        elif self.part_json['protocol'] == 'vmess' :
             new_uuid = uuid.uuid1()
             email_info = ""
             user = {
