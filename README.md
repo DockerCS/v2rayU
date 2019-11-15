@@ -80,27 +80,29 @@ source <(curl -sL https://raw.githubusercontent.com/DockerCS/v2rayU/master/v2ray
 ## 命令行参数  
 所有命令行参数支持**Tab**补全  
 ```bash
-   v2ray -h                   查看帮助
-   v2ray -v                   查看版本信息
-   v2ray start                启动 V2Ray
-   v2ray stop                 停止 V2Ray
-   v2ray restart              重启 V2Ray
-   v2ray status               查看 V2Ray 运行状态
-   v2ray log                  查看 V2Ray 运行日志
-   v2ray update               更新 V2Ray 到最新Release版本
-   v2ray update [version]     更新 V2Ray 到特定版本
-   v2ray update.sh            更新 v2rayU 脚本
-   v2ray update.sh [version]  更新 v2rayU 到特定版本
-   v2ray add                  新增mkcp + 随机一种 (srtp | wechat-video | utp) header伪装的端口(Group)
-   v2ray add [wechat|utp|srtp|dtls|wireguard|socks|mtproto|ss]     新增一种协议的组，端口随机,如 v2ray add utp 为新增utp协议
-   v2ray del                  删除端口组
-   v2ray info                 查看配置
-   v2ray port                 修改端口
-   v2ray tls                  修改tls
-   v2ray tfo                  修改tcpFastOpen
-   v2ray stream               修改传输协议
-   v2ray stats                iptables流量统计
-   v2ray clean                清理日志
+v2ray [-h|--help] [options]
+    -h, --help           get help
+    -v, --version        get version
+    start                start V2Ray
+    stop                 stop V2Ray
+    restart              restart V2Ray
+    status               check V2Ray status
+    new                  create new json profile
+    update               update v2ray to latest
+    update.sh            update multi-v2ray to latest
+    add                  random create mkcp + (srtp|wechat-video|utp|dtls|wireguard) fake header group
+    add [wechat|utp|srtp|dtls|wireguard|socks|mtproto|ss]     create special protocol, random new port
+    del                  delete port group
+    info                 check v2ray profile
+    port                 modify port
+    tls                  modify tls
+    tfo                  modify tcpFastOpen
+    stream               modify protocol
+    cdn                  cdn mode
+    stats                v2ray traffic statistics
+    iptables             iptables traffic statistics
+    clean                clean v2ray log
+    log                  check v2ray log
 ```
 更多命令行参数请参考 [v2rayU wiki](https://github.com/DocerCS/v2rayU/wiki)
 
