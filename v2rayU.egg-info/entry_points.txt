@@ -1,3 +1,0 @@
-[console_scripts]
-v2rayU = v2rayU.main:menu
-
