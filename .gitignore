@@ -2,4 +2,5 @@
 .idea/
 .git/
 dist/
-.pyc
+v2rayU.egg-info/
+__pycache__/
