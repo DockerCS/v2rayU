@@ -4,3 +4,4 @@
 dist/
 v2rayU.egg-info/
 __pycache__/
+Pipfile
